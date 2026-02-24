@@ -1,0 +1,385 @@
+好，这题我们一条一条“拆开讲”，你会彻底明白它在干什么 👇
+
+------
+
+# 一、OSPF 部分
+
+```
+router ospf 1
+ redistribute eigrp 1 subnets route-map EIGRP->OSPF
+```
+
+### ① router ospf 1
+
+启动 OSPF 进程 1
+
+------
+
+### ② redistribute eigrp 1 subnets route-map EIGRP->OSPF
+
+意思：
+
+👉 把 **EIGRP AS 1 的路由** 重分发进 OSPF
+👉 只重分发带子网掩码的路由（subnets）
+👉 并且用 route-map 过滤
+
+⚠ 重点：
+如果 route-map 匹配不到任何路由
+➡ 就什么都不会被重分发
+
+------
+
+# 二、EIGRP 部分
+
+```
+router eigrp 1
+ network 10.0.106.0 0.0.0.255
+```
+
+### ① router eigrp 1
+
+启动 EIGRP AS 1
+
+------
+
+### ② network 10.0.106.0 0.0.0.255
+
+意思：
+
+👉 让 10.0.106.0/24 这个接口参与 EIGRP
+👉 并通告这个网段
+
+⚠ 这个网段就是将来要被重分发进 OSPF 的 WAN 网段
+
+------
+
+# 三、route-map 部分
+
+```
+route-map EIGRP->OSPF permit 10
+ match ip address WAN_PREFIXES
+```
+
+意思：
+
+👉 如果路由匹配 WAN_PREFIXES
+👉 就允许重分发
+
+------
+
+```
+route-map EIGRP->OSPF permit 20
+ match ip address LOCAL_PREFIXES
+```
+
+👉 匹配 LOCAL_PREFIXES
+
+------
+
+```
+route-map EIGRP->OSPF permit 30
+ match ip address VPN_PREFIXES
+```
+
+👉 匹配 VPN_PREFIXES
+
+------
+
+# 四、prefix-list 部分
+
+```
+ip prefix-list LOCAL_PREFIXES seq 5 permit 172.16.0.0/12 le 24
+```
+
+意思：
+
+允许：
+172.16.0.0/12 到 /24 的所有子网
+
+------
+
+```
+ip prefix-list VPN_PREFIXES seq 5 permit 192.168.0.0/16 le 24
+```
+
+允许：
+192.168.0.0/16 到 /24
+
+------
+
+```
+ip prefix-list WAN_PREFIXES seq 5 permit 10.0.0.0/8 le 24
+```
+
+允许：
+10.0.0.0/8 到 /24
+
+⚠ 这里包含 10.0.106.0/24
+所以逻辑上是匹配得到的
+
+------
+
+# 五、真正的问题在哪？
+
+关键在这里：
+
+```
+match ip address WAN_PREFIXES
+```
+
+⚠ 这句默认是匹配 ACL，不是 prefix-list。
+
+正确写法应该是：
+
+```
+match ip address prefix-list WAN_PREFIXES
+```
+
+否则：
+
+- route-map 根本不会去查 prefix-list
+- 没匹配到任何路由
+- OSPF 不会重分发
+- 看起来像“失败”
+
+------
+
+# 六、完整逻辑流程图
+
+EIGRP 学到 10.0.106.0/24
+↓
+OSPF 执行 redistribute
+↓
+检查 route-map
+↓
+route-map 用 match ip address WAN_PREFIXES
+↓
+找 ACL WAN_PREFIXES（不存在）
+↓
+匹配失败
+↓
+OSPF 不重分发
+
+------
+
+# 七、为什么不是别的选项？
+
+### ❌ A 说缺少 10.0.106.0/24
+
+错，因为：
+
+```
+10.0.0.0/8 le 24
+```
+
+已经包含它
+
+------
+
+### ❌ B 说 EIGRP 要 redistribute
+
+错，因为：
+
+我们是从 EIGRP → OSPF
+不需要 EIGRP 再 redistribute
+
+------
+
+### ❌ C 说缺 metric
+
+这题重点不是 metric
+而是压根没匹配到
+
+------
+
+# 八、考试记忆点
+
+## ACL vs Prefix-list
+
+| 写法                              | 匹配什么    |
+| --------------------------------- | ----------- |
+| match ip address NAME             | ACL         |
+| match ip address prefix-list NAME | prefix-list |
+
+这是 Cisco 常考陷阱 ⚠
+
+------
+
+好 👍 这题是典型 **Redistribution + route-map 执行流程** 问题。
+我给你画一个“考试级脑图流程”，你以后遇到类似题直接套。
+
+------
+
+# 🔥 一、EIGRP → OSPF 重分发完整执行顺序图
+
+```
+Step 1
+EIGRP 路由表中有什么？
+        ↓
+Step 2
+OSPF 执行 redistribute eigrp 1
+        ↓
+Step 3
+是否有 route-map？
+        ↓
+       YES
+        ↓
+Step 4
+route-map 按 seq 顺序逐条匹配
+        ↓
+Step 5
+match 条件检查
+        ↓
+Step 6
+匹配成功？
+   ↓           ↓
+  YES          NO
+   ↓           ↓
+permit → 进入OSPF   继续下一条seq
+deny → 丢弃
+```
+
+------
+
+# 🔥 二、结合你这道题走一遍
+
+EIGRP 有：
+
+```
+10.0.106.0/24
+```
+
+OSPF 执行：
+
+```
+redistribute eigrp 1 subnets route-map EIGRP->OSPF
+```
+
+------
+
+## 🔎 进入 route-map
+
+### seq 10
+
+```
+match ip address WAN_PREFIXES
+```
+
+⚠ 关键问题：
+
+- IOS 默认找 ACL
+- 但你配置的是 prefix-list
+
+结果：
+
+```
+没有 ACL WAN_PREFIXES
+→ match 失败
+→ 继续 seq 20
+```
+
+------
+
+### seq 20
+
+```
+match ip address LOCAL_PREFIXES
+```
+
+同样问题 → 失败
+
+------
+
+### seq 30
+
+```
+match ip address VPN_PREFIXES
+```
+
+同样失败
+
+------
+
+### 所有 seq 都没匹配
+
+```
+route-map 默认行为 = deny
+```
+
+结果：
+
+```
+没有任何 EIGRP 路由进入 OSPF
+```
+
+这就是“failed”的原因。
+
+------
+
+# 🔥 三、考试级核心记忆
+
+## Redistribution 的 6 步心法
+
+### ① 原协议必须有路由
+
+没有路由 → 什么都不会重分发
+
+------
+
+### ② redistribute 语句触发重分发
+
+------
+
+### ③ 如果有 route-map
+
+必须匹配成功才会放行
+
+------
+
+### ④ route-map 是顺序执行
+
+从小 seq → 大 seq
+
+------
+
+### ⑤ 所有 seq 都没匹配
+
+默认 = deny
+
+------
+
+### ⑥ match ip address 默认匹配 ACL
+
+要匹配 prefix-list 必须写：
+
+```
+match ip address prefix-list NAME
+```
+
+------
+
+# 🔥 四、最常见 5 个重分发坑
+
+1️⃣ 忘记 metric（尤其 EIGRP）
+2️⃣ route-map 匹配不到
+3️⃣ ACL vs prefix-list 混淆
+4️⃣ 没写 subnets
+5️⃣ 忘记 external type（E1 / E2）
+
+------
+
+# 🔥 五、企业真实网络中的逻辑模型
+
+在企业网络里：
+
+```
+IGP1 (EIGRP)
+     ↓
+ASBR
+     ↓
+route-map 精确控制哪些网段可以进入 OSPF
+     ↓
+OSPF 传播
+```
+
+route-map 就是“防止错误网段泄漏”的安全阀。
