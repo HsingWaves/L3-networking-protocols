@@ -383,3 +383,217 @@ OSPF 传播
 ```
 
 route-map 就是“防止错误网段泄漏”的安全阀。
+
+这个问题问得非常好 👍
+很多人死记硬背“要加 prefix-list”，但不知道**为什么**。
+
+我给你从 IOS 语法结构层面讲清楚。
+
+------
+
+# 🔥 一、关键命令拆解
+
+你写的是：
+
+```cisco
+match ip address WAN_PREFIXES
+```
+
+IOS 解析逻辑是：
+
+```
+match ip address <ACL_NAME>
+```
+
+👉 默认情况下
+**address = access-list**
+
+不是 prefix-list。
+
+------
+
+# 🔥 二、为什么 IOS 会这样设计？
+
+因为在早期 Cisco IOS 里：
+
+- 只有 access-list
+- 还没有 prefix-list
+
+所以：
+
+```cisco
+match ip address X
+```
+
+历史上一直就是匹配 ACL。
+
+后来 Cisco 才加入：
+
+```
+ip prefix-list
+```
+
+为了兼容老设备，Cisco 没改原语法，而是新增了关键字：
+
+```
+match ip address prefix-list NAME
+```
+
+------
+
+# 🔥 三、IOS 实际解析过程
+
+当 IOS 看到：
+
+```cisco
+match ip address WAN_PREFIXES
+```
+
+它会：
+
+```
+Step 1：查 ACL 表
+有没有叫 WAN_PREFIXES 的 ACL？
+```
+
+如果没有 ACL：
+
+```
+→ 匹配不到
+→ 返回 false
+```
+
+它 **不会自动去 prefix-list 表里查**。
+
+------
+
+# 🔥 四、为什么不会自动判断？
+
+因为：
+
+ACL 和 prefix-list 是两种不同的对象类型
+
+IOS 内部是分开存储的：
+
+| 类型        | 存储表       |
+| ----------- | ------------ |
+| access-list | ACL table    |
+| prefix-list | Prefix table |
+
+命令必须明确告诉 IOS 去查哪个表。
+
+------
+
+# 🔥 五、类比帮助理解
+
+想象：
+
+你去银行柜台说：
+
+> 帮我查账户 “WAN_PREFIXES”
+
+柜员默认只查：
+
+✔ 活期账户
+
+但你的账户其实在：
+
+✔ 定期账户
+
+如果你不说清楚类型：
+
+银行不会帮你去另一个系统查。
+
+------
+
+# 🔥 六、怎么验证这个行为？
+
+你可以实验：
+
+### 1️⃣ 只定义 prefix-list
+
+```cisco
+ip prefix-list TEST permit 10.0.0.0/8 le 24
+```
+
+### 2️⃣ route-map 不加 prefix-list 关键字
+
+```cisco
+route-map RM permit 10
+ match ip address TEST
+```
+
+### 3️⃣ debug 看 redis
+
+你会发现：
+
+→ 没匹配成功
+
+------
+
+# 🔥 七、正确写法
+
+```cisco
+match ip address prefix-list WAN_PREFIXES
+```
+
+IOS 看到 prefix-list 关键字才会：
+
+```
+去 prefix-list 表查
+```
+
+------
+
+# 🔥 八、考试记忆口诀
+
+```
+match ip address = ACL
+match ip address prefix-list = prefix-list
+```
+
+------
+
+# 🔥 九、为什么很多人被坑？
+
+因为：
+
+route-map 里写的是：
+
+```
+match ip address XXX
+```
+
+下面配置的是：
+
+```
+ip prefix-list XXX
+```
+
+名字一样
+但对象类型不同
+IOS 不会帮你自动关联。
+
+------
+
+# 🔥 十、进阶理解（CCNP / 企业级）
+
+在大型网络中：
+
+ACL 通常用于：
+
+- PBR
+- QoS
+- NAT
+- route filtering
+
+prefix-list 专门用于：
+
+- BGP
+- Redistribution
+- IGP route filtering
+
+所以 Cisco 强制区分对象类型，是为了精确控制。
+
+------
+
