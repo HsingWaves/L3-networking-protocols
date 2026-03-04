@@ -129,3 +129,33 @@ control-plane
 > 数据平面是“帮别人转发”
 >  控制平面是“决定怎么转发”
 >  CoPP 是“保护大脑不被打爆”
+
+CoPP 作用：
+
+```
+限制进入 CPU 的流量
+```
+
+如果 ACL 或 policing 速率太小：
+
+- OSPF Hello 被限速
+- BGP Keepalive 被丢
+- EIGRP Hello 被丢
+
+➡ 邻居断开
+ ➡ 路由 flap
+
+------
+
+# 🔥 生产环境正确做法
+
+在正式 drop 之前：
+
+✅ 先验证 ACL 是否匹配正确
+ ✅ 先验证速率是否合理
+
+怎么做？
+
+👉 先全部 transmit（不丢包）
+
+等确认没问题再改成 drop
