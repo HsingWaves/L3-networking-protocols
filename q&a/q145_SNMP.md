@@ -234,3 +234,23 @@ Accounting → 1813
 > RADIUS = 1812 / 1813
 > TACACS+ = TCP 49
 
+
+
+SNMPv3
+ ├── Engine ID
+ ├── User
+ ├── Auth (MD5/SHA)
+ └── Privacy (DES/AES)
+
+看到：
+
+```
+Unknown Engine ID
+```
+
+立刻想到：
+
+```
+show snmp user
+debug snmp packet
+```
