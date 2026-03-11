@@ -1,0 +1,3 @@
+**Routing Loops (A):** When you redistribute routes from OSPF into EIGRP and then back from EIGRP into OSPF at a different boundary point, a router might receive its own advertised route back with a "better" looking metric. This can create a feedback loop where packets circulate indefinitely between the two routing domains.
+
+**Sub-optimal Routing (B):** OSPF and EIGRP use fundamentally different "math" to calculate path costs (OSPF uses **bandwidth/cost**, while EIGRP uses a composite of **bandwidth and delay**). Because these metrics don't translate directly, a router might choose a path through the redistributed domain that is actually slower or more congested than a native path, simply because the redistributed metric looks more attractive.
