@@ -104,3 +104,15 @@ Think of a message-digest as a **digital seal** on an envelope.
 - **Anti-Spoofing:** An attacker cannot pretend to be a legitimate router because they don't know the secret key required to generate a valid digest.
 - **Anti-Tampering:** If a "man-in-the-middle" changes even a single bit in the OSPF LSA (Link State Advertisement) while it's in transit, the digest will no longer match, and the receiving router will drop the packet.
 - **Security:** Unlike "Plain Text" authentication (Type 1), where the password `exam` is visible in the packet header, MD5 (Type 2) keeps the password hidden.
+
+
+
+Cisco Privileged Exce Mode:
+
+**故障现象**：管理员尝试切换到 R1 的特权模式（即从 `R1>` 进入 `R1#`），但操作失败。
+
+**触发点**：在 Cisco IOS 中，如果你没有配置 `enable password` 或 `enable secret`，且通过远程登录（如 Telnet/SSH）访问设备，系统通常会拒绝你进入特权模式，并提示 "No password set"。
+
+**核心需求**：需要一条正确的命令来设置进入特权模式的密码。
+
+ `enable password Cisco@123`
