@@ -1,0 +1,23 @@
+In a DMVPN environment, the Hub doesn't usually know the public IP addresses of the Spokes in advance (since they are often dynamic). Using a "wildcard" address allows the Hub to form an IPSec association with **any** Spoke using that specific key.
+
+### How it works:
+
+When you use `address 0.0.0.0 0.0.0.0` (often abbreviated just as `0.0.0.0`), you are telling the router's IKE process: *"If any device tries to initiate a VPN tunnel and uses the password 'DMVPN_KEY', I don't care what their source IP address is—let them in."*
+
+### Phase 1: The Management Tunnel
+
+The goal of Phase 1 is to authenticate the two routers and create a secure "path" for them to talk about how they are going to encrypt the actual data.
+
+- **Protocol:** Usually **ISAKMP** (Internet Security Association and Key Management Protocol).
+- **Purpose:** Mutual authentication (using the Pre-Shared Key we discussed) and establishing a secure channel for Phase 2 negotiations.
+- **Result:** An **ISAKMP SA** (Security Association). This is bidirectional.
+
+------
+
+### Phase 2: The Data Tunnel
+
+Once the routers trust each other, they negotiate how to protect the actual user traffic (the "data").
+
+- **Protocol:** **IPSec** (specifically **ESP** - Encapsulating Security Payload).
+- **Purpose:** Negotiating the encryption (AES/DES) and hashing (SHA/MD5) for the actual packets moving between branches.
+- **Result:** **IPSec SAs**. Unlike Phase 1, these are unidirectional (one for "inbound" and one for "outbound").
