@@ -1,0 +1,22 @@
+To enable **MPLS** on an interface, you first need to ensure that the foundation (IP and CEF) is in place. Here is how the full configuration looks on a Cisco IOS router:
+
+### The Interface Configuration
+
+You must have a valid IP address and the `mpls ip` command under the interface.
+
+Bash
+
+```
+Router(config)# ip cef                             # CEF must be enabled globally
+Router(config)# interface GigabitEthernet 0/1
+Router(config-if)# ip address 10.1.1.1 255.255.255.252
+Router(config-if)# mpls ip                         # This enables LDP on the interface
+```
+
+### How to Verify It
+
+Once configured, you can verify that the interface is participating in MPLS and that you have neighbors using these commands:
+
+- **`show mpls interfaces`**: Shows which interfaces have `mpls ip` enabled.
+- **`show mpls ldp neighbor`**: Shows if you have successfully established a Label Distribution Protocol relationship with the router on the other end.
+- **`show mpls forwarding-table`**: Shows the actual "Label Swapping" table.
