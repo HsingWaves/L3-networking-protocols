@@ -36,3 +36,10 @@ Cisco often bundles **DHCPv6 Guard** under a larger umbrella called **IPv6 First
 - **RA Guard:** Blocks rogue Router Advertisements.
 - **Source Guard:** Prevents IP spoofing.
 
+| **IPv6 Feature**       | **Description**                                              |
+| ---------------------- | ------------------------------------------------------------ |
+| **IPv6 DHCPv6 Guard**  | Block reply and advertisement messages from unauthorized DHCP servers and relay agents. |
+| **IPv6 Binding Table** | Create IPv6 neighbors connected to the device from information sources such as NDP snooping. |
+| **IPv6 Source Guard**  | Filter inbound traffic on Layer 2 switch ports that are not in the IPv6 binding table. |
+| **IPv6 RA Guard**      | Block a malicious host and permit the router from a legitimate route. |
+| **IPv6 ND Inspection** | Create a binding table that is based on NS and NA messages.  |
