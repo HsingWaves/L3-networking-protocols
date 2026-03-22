@@ -1,0 +1,22 @@
+| **Attribute**                | **Purpose**                                                  | **Action**                                                   |
+| ---------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **RD (Route Distinguisher)** | **Uniqueness:** Makes a standard IPv4 prefix unique across the MPLS core (creating a VPNv4 address). | Prepends a 64-bit value to the 32-bit IP (e.g., 100:1:10.1.1.0/24). |
+| **RT (Route Target)**        | **Membership:** A BGP Extended Community that determines which VRFs "import" or "export" a route. | **Installs** the route into the local VRF routing table if the import RT matches. |
+
+
+
+### How it works in the "Real World"
+
+Think of the **RD** as a "Social Security Number" (it just identifies who the route is) and the **RT** as a "Key Card" (it determines which rooms—or VRFs—the route is allowed to enter).
+
+1. **Export:** When a PE router learns a route from a customer, it attaches an **Export RT**.
+2. **Transport:** The route travels via MP-BGP across the network.
+3. **Import:** When another PE router receives that route, it looks at its local VRF configuration. If the **Import RT** on the VRF matches the RT attached to the route, it **installs** that route into that specific VRF.
+
+**RD:** Solves the **Address Overlap** problem (Control Plane Uniqueness).
+
+**RT:** Solves the **Route Distribution** problem (Control Plane Policy/Installation).
+
+The **RD** ensures the data is stored correctly in the "Global Store" without overwriting other customers' data.
+
+The **RT** is the conditional logic (`if` statement) that moves that data from the "Global Store" into the "Local VRF Cache."
