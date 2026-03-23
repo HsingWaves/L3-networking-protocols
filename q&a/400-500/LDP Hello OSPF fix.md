@@ -50,3 +50,18 @@ The prompt specifically states: *"R7 must not be Elected as a DR."*
 | `ip ospf network broadcast` | Matches R4's default network type. |
 
 Would you like to review the other OSPF network types, like Non-Broadcast (NBMA) or Point-to-Multipoint, and when they are used?
+
+
+
+
+
+```
+OSPFv3: Hello from FE80::C801:FFF:FE94:1C with mismatched NSSA option bit
+```
+
+### Why this indicates an Area Type mismatch
+
+In OSPF (both v2 and v3), the **Area Type** (Normal, Stub, or NSSA) is an essential parameter that must match between neighbors to form an adjacency. This is communicated via specific flags in the "Options" field of the OSPF Hello packet.
+
+- **NSSA Option Bit (the 'N' bit):** This bit indicates that the router expects the area to be a **Not-So-Stubby Area**.
+- **The Error:** When the debug says "mismatched NSSA option bit," it means one router has the interface configured in an NSSA area, while the other router likely has it configured as a Normal area or a regular Stub area.

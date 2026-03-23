@@ -19,3 +19,24 @@ Exam logic: If ping is successful, it means the network layer (L3) is fine. If t
 2. Error Message Comparison Table (Troubleshooting Tips)
 
 To help you prepare for the exam, I have summarized several common TFTP error states, which are often used as distractors in the exam:
+
+
+
+### The Problem: Subnet Mismatch
+
+If you look closely at the IP addresses and subnet masks in the diagram:
+
+- **TFTP Server:** `10.0.0.2 /24` (Subnet: `10.0.0.0` to `10.0.0.255`)
+- **Switch (E0/1):** `10.0.1.1 /24` (Subnet: `10.0.1.0` to `10.0.1.255`)
+
+The TFTP server and the switch are on **different subnets**. In the CLI output shown in the image, the engineer attempts to send the configuration to `10.0.0.1`. However, there is no device at `10.0.0.1` visible, and more importantly, the switch's own interface is in the `10.0.1.x` range.
+
+### Why C is the solution
+
+For the `copy` command to work in this specific peer-to-peer topology without a router in between:
+
+1. The devices must be in the **same broadcast domain/subnet**.
+2. The engineer is currently trying to reach an IP (`10.0.0.1`) that doesn't match the switch's local interface configuration.
+3. By using **10.0.1.1** (or ensuring both devices are on the `10.0.1.x` or `10.0.0.x` network), the connectivity issue is resolved.
+
+> **Note:** In many certification exam questions like this, "Use TFTP server IP address 10.0.1.1" implies changing the server's IP to match the switch's subnet so they can communicate directly.
