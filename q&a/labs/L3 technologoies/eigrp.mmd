@@ -1,0 +1,379 @@
+# EIGRP
+
+## Objective
+
+In this lab, you will configure the Enhanced Interior Gateway Routing Protocol (EIGRP) routing protocol and Message Digest 5 (MD5) authentication.
+
+## Lab Topology
+
+The topology diagram below represents the portion of the network you will configure in this lab.
+
+![img](data:image/png;base64, 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)
+
+## Command Summary
+
+Command
+
+Description
+
+**auto-summary**
+
+restores the default behavior of automatic summarization of subnet routes into network-level routes
+
+**configure terminal**
+
+enters global configuration mode from privileged EXEC mode
+
+**debug eigrp neighbors**
+
+displays EIGRP neighbors discovered by EIGRP
+
+**enable**
+
+enters privileged EXEC mode
+
+**end**
+
+ends and exits configuration mode
+
+**exit**
+
+exits one level in the menu structure
+
+**interface** *type number*
+
+changes from global configuration mode to interface configuration mode
+
+**ip authentication key-chain eigrp** *autonomous-system-number key-chain*
+
+enables authentication of EIGRP packets
+
+**ip authentication mode eigrp** *autonomous-system-number* **md5**
+
+specifies the type of authentication used in EIGRP packets
+
+**key** *key-id*
+
+creates or modifies a key chain key
+
+**key chain** *key-chain-name*
+
+creates or modifies a key chain
+
+**key-string** *key-string-text*
+
+specifies the authentication string for the key
+
+**network** *network-address*
+
+activates EIGRP on the specified network
+
+**no debug all**
+
+turns off all diagnostic output
+
+**ping** *ip-address*
+
+sends an Internet Control Message Protocol (ICMP) echo request to the specified address
+
+**router eigrp** *autonomous-system-number*
+
+enters router configuration mode for EIGRP
+
+**show ip eigrp neighbors**
+
+displays information about EIGRP neighbors
+
+**show ip eigrp topology**
+
+displays EIGRP topology table
+
+**show ip eigrp traffic**
+
+displays EIGRP traffic information
+
+**show ip protocols**
+
+displays information about active routing protocols
+
+**show ip route**
+
+displays the IP routing table
+
+**show running-config**
+
+displays the active configuration file
+
+**shutdown**; **no shutdown**
+
+disables an interface; enables an interface
+
+## Lab Tasks
+
+Passwords in this lab have been configured as **cisco**.
+
+### Task 1: Enable EIGRP, and Test Connectivity
+
+1. Configure EIGRP on Router1, Router2, Router3, and Router4. Use autonomous system (AS) number **100**, and configure EIGRP to automatically summarize network advertisements and send and receive updates on all interfaces except the Frame Relay interfaces. While you are configuring EIGRP on the routers, you should see output to the console as EIGRP neighbor relationships form.
+2. Display the dynamic routing protocols that are running on Router4. What is the maximum router hop count with EIGRP?
+3. On Router1, display Router1's EIGRP neighbors.
+4. On Router1, display the statistics for EIGRP packet types sent and received.
+5. On Router1, display the EIGRP topology database. What does the EIGRP topology database contain?
+6. On Router4, display the IP routing table. What is the administrative distance for EIGRP?
+7. From Router4, ping Router1 (175.10.1.1) and Router2 (160.10.1.2). These pings should succeed if EIGRP is configured correctly on all routers.
+
+### Task 2: Configure EIGRP MD5 Authentication
+
+In this task, you will configure EIGRP MD5 authentication between Router3 and Router4.
+
+1. On Router4, create a key chain that can be used for EIGRP authentication. Use a key chain of **ccna-chain**, a key of **1**, and a key string of **boson**.
+2. Now that the key chain has been created, enable EIGRP authentication on Router4; use the new key chain. Note that the EIGRP neighbor relationship between Router3 and Router4 is lost.
+3. On Router3, create a key chain that can be used for EIGRP authentication. Use a key chain of **ccna-chain**, a key of **1**, and a key string of **boson**.
+4. Now that the key chain has been created, enable EIGRP authentication on Router3; use the new key chain. Note that the EIGRP neighbor relationship between Router3 and Router4 is restored.
+5. From Router4, ping Router1 (175.10.1.1) and Router2 (160.10.1.2). These pings should succeed if EIGRP is configured correctly on all routers.
+
+### Task 3: Examine EIGRP Debugging Output
+
+Reviewing debugging output can help you troubleshoot EIGRP issues.
+
+1. On Router4, display EIGRP neighbors discovered by EIGRP.
+2. On Router4, disable the Serial 0/0 interface. Review the EIGRP debugging output.
+3. On Router4, enable the Serial 0/0 interface and review the EIGRP debugging output.
+4. On Router4, disable EIGRP debugging.
+5. What can you determine from the EIGRP neighbors debugging output?
+
+Once you have completed this lab, be sure to check your work by using the grading function. You can do so by clicking**Grade**from the menu bar.
+
+## Lab Solutions
+
+Passwords in this lab have been configured as **cisco**.
+
+### Task 1: Enable EIGRP, and Test Connectivity
+
+1. Issue the following commands to correctly configure EIGRP on Router1, Router2, Router3, and Router4; while you are configuring EIGRP on the routers, you should see output to the console as EIGRP neighbor relationships form:Router1(config)#router eigrp 100
+   Router1(config-router)#auto-summary
+   Router1(config-router)#network 160.10.0.0
+   Router1(config-router)#network 175.10.0.0
+
+   Router2(config)#router eigrp 100
+   Router2(config-router)#auto-summary
+   Router2(config-router)#network 160.10.0.0
+
+   Router3(config)#router eigrp 100
+   Router3(config-router)#auto-summary
+   Router3(config-router)#network 175.10.0.0
+   Router3(config-router)#network 180.10.0.0
+   Router3(config-router)#network 197.10.1.0
+
+   Router4(config)#router eigrp 100
+   Router4(config-router)#auto-summary
+   Router4(config-router)#network 180.10.0.0
+   Router4(config-router)#network 192.168.1.0
+
+2. The maximum router hop count with EIGRP is 100 hops. On Router4, issue the following command to display the dynamic routing protocols that are running on the router; sample output is shown below:Router4#show ip protocols
+   Routing Protocol is “eigrp 100”
+     Outgoing update filter list for all interfaces is not set
+     Incoming update filter list for all interfaces is not set
+     Default networks flagged in outgoing updates
+     Default networks accepted from incoming updates
+     EIGRP metric weight K1=1, K2=0, K3=1, K4=0, K5=0
+     EIGRP maximum hopcount 100
+     EIGRP maximum metric variance 1
+     Redistributing: 
+     Routing for Networks:
+     Automatic network summarization is in effect
+       180.10.0.0
+       192.168.1.0
+     Routing Information Sources:
+       Gateway        Distance      Last update
+       180.10.1.1           90      00:00:35
+     Distance: internal 90 external 170
+
+3. On Router1, issue the following command to display Router1's EIGRP neighbors. Sample output is shown below:Router1#show ip eigrp neighbors 
+   IP-EIGRP neighbors for process 100
+   H   Address                 Interface       Hold Uptime   SRTT   RTO  Q  Seq
+                                               (sec)         (ms)       Cnt Num
+   0   160.10.1.2              Fa0/0             13 00:01:52  382  2292  0  5  
+   1   175.10.1.2              Se0/0             13 00:01:37  586  3516  0  6
+
+4. On Router1, issue the following command to display the statistics for EIGRP packet types sent and received. Sample output is below:Router1#show ip eigrp traffic
+   IP-EIGRP Traffic Statistics for AS 100
+     Hellos sent/received: 119/121
+     Updates sent/received: 10/12
+     Queries sent/received: 14/4
+     Replies sent/received: 11/11
+     Acks sent/received: 2/13
+     Input queue high water mark 2, 0 drops
+     SIA-Queries sent/received: 0/0
+     SIA Replies sent/received: 0/0:
+     Hello Process ID: 107
+     PDM Process ID: 105
+
+5. On Router1, issue the following command to display the EIGRP topology database. The EIGRP topology database contains primary and backup routes to each destination learned from EIGRP neighbors. The best routes (those with the lowest composite metric) are termed successor routes and are inserted in the IP routing table on the router. Sample output is below:Router1#show ip eigrp topology 
+   IP-EIGRP Topology Table for process 100
+
+   Codes: P - Passive, A - Active, U - Update, Q - Query, R - Reply,
+          r - Reply status
+
+   P 160.10.1.0/24, 1 successors, FD is 28160
+           via Connected, FastEthernet0/0
+   P 160.10.2.0/24, 1 successors, FD is 128256
+           via Connected, Loopback0
+   P 175.10.1.0/24, 1 successors, FD is 40512000
+           via Connected, Serial0/0
+   P 175.10.0.0/16, 1 successors, FD is 40512000
+           via Summary (40512000/0), Null0
+   P 160.10.0.0/16, 1 successors, FD is 28160
+           via Summary (28160/0), Null0
+   P 180.10.0.0/16, 1 successors, FD is 41024000
+           via 175.10.1.2 (41024000/2169856), Serial0/0
+   P 197.10.1.0/24, 1 successors, FD is 40514560
+           via 175.10.1.2 (40514560/28160), Serial0/0
+   P 192.168.1.0/24, 1 successors, FD is 41026560
+           via 175.10.1.2 (41026560/2172416), Serial0/0
+
+6. The administrative distance for EIGRP is 90. On Router4, issue the following command to display the IP routing table on Router4; sample output is shown below:Router4#show ip route
+   Codes: L - local, C - connected, S - static, I - IGRP, R - RIP, M - mobile, B – BGP
+          D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+          E1 - OSPF external type 1, E2 - OSPF external type 2, E – EGP
+          i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, * - candidate default
+          U - per-user static route
+
+   Gateway of last resort is not set
+
+   ​     180.10.0.0/16 is variably subnetted, 3 subnets
+   D       180.10.0.0/16 is a summary, 00:01:31, Null0
+   C       180.10.1.0/24 is directly connected, Serial0/0
+   L       180.10.1.2/32 is directly connected, Serial0/0
+   ​     192.168.1.0/24 is variably subnetted, 2 subnets
+   C       192.168.1.0/24 is directly connected, FastEthernet0/1
+   L       192.168.1.1/32 is directly connected, FastEthernet0/1
+   D    197.10.1.0 [90/2172416] via 180.10.1.1, 00:01:26, Serial0/0
+   D    175.10.0.0 [90/2681856] via 180.10.1.1, 00:01:26, Serial0/0
+   D    160.10.0.0 [90/2684416] via 180.10.1.1, 00:01:26, Serial0/0
+
+7. Pings from Router4 to Router1 (175.10.1.1) and Router2 (160.10.1.2) should succeed if EIGRP is configured correctly on all routers.Router4#ping 175.10.1.1
+   Router4#ping 160.10.1.2
+
+### Task 2: Configure EIGRP MD5 Authentication
+
+1. On Router4, issue the following commands to create a key chain that can be used for EIGRP authentication:Router4(config)#key chain ccna-chain
+   Router4(config-keychain)#key 1
+   Router4(config-keychain-key)#key-string boson
+
+2. Now that the key chain has been created, issue the following commands on Router4 to enable EIGRP authentication using the new key chain. Note that the EIGRP neighbor relationship between Router3 and Router4 is lost.Router4(config)#interface serial 0/0
+   Router4(config-if)#ip authentication mode eigrp 100 md5
+   Router4(config-if)#ip authentication key-chain eigrp 100 ccna-chain
+
+   13:08:58: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 180.10.1.1 (Serial0/0)
+   is down: authentication mode changed
+
+3. On Router3, issue the following commands to create a key chain that can be used for EIGRP authentication:Router3(config)#key chain ccna-chain
+   Router3(config-keychain)#key 1
+   Router3(config-keychain-key)#key-string boson
+
+4. Now that the key chain has been created, issue the following commands on Router3 to enable EIGRP authentication using the new key chain. Note that the EIGRP neighbor relationship between Router3 and Router4 is restored.Router3(config)#interface serial 0/1
+   Router3(config-if)#ip authentication mode eigrp 100 md5
+   Router3(config-if)#ip authentication key-chain eigrp 100 ccna-chain
+
+   13:16:04: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 180.10.1.2 (Serial0/1)
+   is up: new adjacency
+
+5. Pings from Router4 to Router1 (175.10.1.1) and Router2 (160.10.1.2) should succeed if EIGRP is configured correctly on all routers.Router4#ping 175.10.1.1
+   Router4#ping 160.10.1.2
+
+### Task 3: Examine EIGRP Debugging Output
+
+1. On Router4, issue the following command to display EIGRP neighbors discovered by EIGRP:Router4#debug eigrp neighbors 
+   EIGRP Neighbors debugging is on
+2. On Router4, issue the following commands to disable the Serial 0/0 interface. Review the EIGRP debugging output:Router4(config)#interface serial 0/0
+   Router4(config-if)#shutdown 
+   12:46:00: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 180.10.1.1 (Serial0/0)
+   is down: interface down
+   12:46:00: EIGRP: Neighbor 180.10.1.1 went down on Serial0/0
+   12:46:00: %LINK-5-CHANGED: Interface Serial0/0,
+   changed state to administratively down
+3. On Router4, issue the following command to enable the Serial 0/0 interface. Review the EIGRP debugging output:Router4(config-if)#no shutdown 
+   12:47:30: %LINK-3-UPDOWN: Interface Serial0/0, changed state to up
+   12:47:34: EIGRP: New peer 180.10.1.1
+   12:47:34: %DUAL-5-NBRCHANGE: IP-EIGRP(0) 100: Neighbor 180.10.1.1 (Serial0/0)
+   is up: new adjacency
+4. On Router4, issue the following commands to disable EIGRP debugging:Router4#no debug all
+   All possible debugging has been turned off
+5. You can determine from the EIGRP neighbors debugging output that a neighbor relationship was lost when the Serial 0/0 interface was disabled and a new relationship formed when it was subsequently enabled.
+
+### Sample Configuration Script
+
+Router1
+
+Router1#show running-config Building configuration...Current configuration : 1156 bytes!Version 15.bservice timestamps debug uptimeservice timestamps log uptimeno service password-encryption!hostname Router1enable secret 5 $1$lYSY$Ai2eZ8KpUCL9ptJCN1c41wenable password boson!ip subnet-zero!
+ip cefno ip domain-lookupip host Router2 160.10.1.2!interface Loopback0 ip address 160.10.2.1 255.255.255.0 no ip directed broadcast!interface Serial0/0 description Serial Link to Router3 ip address 175.10.1.1 255.255.255.0 no ip directed-broadcast clock rate 64000 bandwidth 64!interface Serial0/1 no ip address no ip directed-broadcast shutdown!interface FastEthernet0/0 ip address 160.10.1.1 255.255.255.0 no ip directed-broadcast!interface FastEthernet0/1 no ip address no ip directed-broadcast shutdown!router eigrp 100 network 160.10.0.0 network 175.10.0.0 auto-summary!ip classlessno ip http server!cdp holdtime 20cdp timer 50!banner motd ^CUnauthorized Access Prohibited^Cline con 0 login password ciscoline aux 0line vty 0 4 login!no scheduler allocateend 
+
+太棒了！恭喜你完成了整个 EIGRP 实验。这份总结包含了你在实验中用到的所有核心命令，你可以保存下来作为以后复习的“小抄”。
+
+------
+
+## ## EIGRP 实验配置全攻略总结
+
+### ### 1. 基础配置命令 (Task 1)
+
+用于启用协议并宣告网络，使全网互通。
+
+| **命令**             | **作用**                                                |
+| -------------------- | ------------------------------------------------------- |
+| `router eigrp 100`   | 进入 EIGRP 配置模式（AS 编号必须统一为 100）            |
+| `auto-summary`       | 开启自动汇总（将子网汇总为 B 类或 C 类主类网络）        |
+| `network 160.10.0.0` | 宣告网络，激活对应接口上的 EIGRP                        |
+| `no auto-summary`    | (补充) 关闭自动汇总（实际工程中更常用，以传输精确路由） |
+
+------
+
+### ### 2. MD5 认证配置 (Task 2)
+
+用于在 Router3 和 Router4 之间建立安全认证，防止非法设备接入。
+
+**第一步：定义钥匙链 (Global Configuration)**
+
+Bash
+
+```
+key chain ccna-chain      # 创建钥匙链名字
+  key 1                   # 设置钥匙 ID (两端必须一致)
+    key-string boson      # 设置密码 (两端必须一致)
+```
+
+**第二步：应用到接口 (Interface Configuration)**
+
+Bash
+
+```
+interface serial 0/0      # 进入对应的物理接口
+  ip authentication mode eigrp 100 md5                # 开启 MD5 模式
+  ip authentication key-chain eigrp 100 ccna-chain    # 挂载刚才创建的钥匙链
+```
+
+------
+
+### ### 3. 验证与排错命令 (Task 1 & 3)
+
+这是网络工程师最常用的“诊断工具”。
+
+- **查看类：**
+  - `show ip route`: 查看路由表（找标记为 **D** 的路由）。
+  - `show ip eigrp neighbors`: 查看邻居表（确认握手是否成功）。
+  - `show ip eigrp topology`: 查看拓扑表（查看所有备选路径）。
+  - `show ip protocols`: 查看路由协议参数（如 Max Hop Count, AD 值等）。
+- **调试类：**
+  - `debug eigrp neighbors`: 实时查看邻居状态变化日志。
+  - `undebug all` 或 `no debug all`: **立即停止**所有调试输出（必记！）。
+
+------
+
+### ### 4. 关键参数回顾
+
+- **Administrative Distance (AD):** EIGRP 内部路由为 **90**。
+- **默认最大跳数:** **100**。
+- **停机日志:** `%DUAL-5-NBRCHANGE`（这是你实验中看到最多的提示，代表邻居状态变动）。
+
+------
+
