@@ -89,6 +89,18 @@ MPLS 的这些概念可以用**“火车物流系统”**来类比记忆。
 
 
 
+#### **Label Switch Router (LSR) - 中间核心节点**
+
+- **reads the labels and forwards the packet based on the labels**: LSR 就像一个熟练的分拣员，它不看包裹里面的 IP，只看外面的标签（Label），根据标签转发表（LFIB）进行交换（Swap）并转发。
+- **performs penultimate hop popping (PHP)**: 这是 MPLS 的一个优化机制。倒数第二跳路由器（PHP 节点）会将外层标签剥掉，这样最后一跳路由器（Egress LER）就不用做两次查找（一次看标签，一次看 IP）了。
+
+#### **Label Edge Router (LER) - 边界接入节点**
+
+- **assigns labels to unlabeled packets**: 当一个普通的 IP 包进入 MPLS 网络时，LER 负责给它贴上第一张标签（这就是我们之前说的 **Impose/Push**）。
+- **handles traffic between multiple VPNs**: 在 MPLS VPN 环境中，LER（作为 PE 设备）负责区分不同的 VRF 实例，处理来自不同 VPN 客户的流量。
+
+
+
 | **角色**                | **定义特征**                                 | **英文原文**                                                 |
 | ----------------------- | -------------------------------------------- | ------------------------------------------------------------ |
 | **Provider (P) device** | **运营商核心**，只负责快速交换标签包         | device in the **core** of the provider network that switches MPLS packets |
@@ -119,3 +131,42 @@ MPLS 的这些概念可以用**“火车物流系统”**来类比记忆。
 - **位置：** 运营商网络的核心深处。
 - **特点：** 它们只负责**快**。它们不看包里是什么，只根据标签无脑转发，效率极高。
 - **关键词：** **Core**, **switches MPLS packets**。
+
+
+
+
+
+这道题考察的是 **MPLS（多协议标签交换）** 的基本组件和角色。在 CCNP 考试中，分清这几个缩写是掌握 MPLS VPN 的第一步。
+
+以下是正确的对应关系：
+
+------
+
+### 正确对应关系 (Match Table)
+
+| **缩写** | **描述 (Description)**                             | **核心角色**                                                 |
+| -------- | -------------------------------------------------- | ------------------------------------------------------------ |
+| **P**    | **Device that forwards traffic based on labels**   | **Provider Router**。它在 MPLS 骨干网内部，只看标签转发，不看 IP 路由。 |
+| **LSP**  | **Path that the labeled packet takes**             | **Label Switched Path**。这就是标签报文穿过网络所经过的“隧道”路径。 |
+| **CE**   | **Device that is unaware of MPLS labeling**        | **Customer Edge**。客户侧设备，它只发普通的 IP 包，完全不知道 MPLS 标签的存在。 |
+| **PE**   | **Device that removes and adds the MPLS labeling** | **Provider Edge**。运营商边界设备。它负责打上标签（Push）和剥掉标签（Pop）。 |
+
+------
+
+### 💡 记忆小贴士：根据位置来记
+
+1. **CE (Customer)**：你在家里或公司办公，你是“客户”，你不需要懂 MPLS。
+2. **PE (Provider Edge)**：它是**“守门员”**。既然在边缘（Edge），它就要负责“转换”。把客户的普通 IP 包变成带标签的 MPLS 包。
+3. **P (Provider)**：它是**“快递员”**。在核心网内部，它只认快递单号（标签），不关心包裹里装的是什么。
+4. **LSP (Path)**：字母 **P** 在这里代表 **Path**（路径），它描述的是一个过程或轨迹。
+
+------
+
+### 考试常见坑点：
+
+- **P vs PE**：记住 **P** 路由器只负责 **Swap**（交换标签），而 **PE** 路由器负责 **Push**（压入）和 **Pop**（弹出）标签。
+- **Unaware**：看到这个词，闭眼选 **CE**。它是整个架构中唯一一个“蒙在鼓里”的设备。
+
+既然你之前在研究 CCNP 的 OSPF 状态和策略路由（PBR），MPLS 通常是紧随其后的高级话题。
+
+**需要我帮你解释一下标签是如何在 PE 路由器上被“压入 (Push)”和“弹出 (Pop)”的具体流程吗？**

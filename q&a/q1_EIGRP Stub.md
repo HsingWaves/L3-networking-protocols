@@ -243,3 +243,38 @@ ipv6 router eigrp 100
 
 ------
 
+
+
+
+
+## Gemini said
+
+This is a classic EIGRP neighbor adjacency puzzle. You correctly identified that the **`passive-interface`** command was placed on the wrong link.
+
+In EIGRP (and OSPF), the `passive-interface` command is a bit of a "silent killer." It tells the router: *"Advertise this network to others, but do NOT send or receive Hello packets on this interface."*
+
+**停止**在该接口上发送 Hello 数据包。
+
+**停止**在该接口上处理接收到的 Hello 数据包。
+
+**但是**，依然会将该接口所属的网段通告给其他邻居。
+
+### Why Fa0/0 was the mistake:
+
+- **The Intent:** Usually, you make the interface facing the **LAN** (FastEthernet 0/1) passive. This is because computers on a switch don't need to hear EIGRP Hellos—it’s a security risk and a waste of bandwidth.
+- **The Reality:** Looking at the diagram, **FastEthernet 0/0** is the link connecting R1 to R2. By making it passive, R1 stopped sending Hello packets to R2. No Hellos = No Neighbor Adjacency.
+
+------
+
+### Why the other options were wrong:
+
+- **"EIGRP area":** EIGRP doesn't use "areas" like OSPF does. It uses Autonomous Systems (AS).
+- **"Process ID starting with 1":** The AS number (12 in this case) just has to **match** on both routers. It can be any number from 1 to 65535. It doesn't need to be incremented; in fact, if R1 is 12 and R2 is 13, they will never become neighbors.
+- **"Consolidated network command":** While you *could* use `network 192.168.0.0`, being specific is actually better practice to avoid accidentally enabling EIGRP on interfaces you didn't intend to.
+
+### Quick Rule of Thumb
+
+> **Passive = LAN.** (Keep the users quiet) **Active = WAN.** (Talk to your routers)
+>
+> **Active = WAN.** (Talk to your routers)
+
